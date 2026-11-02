@@ -3,6 +3,7 @@ package com.example.products.service;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.example.products.rest.CreateProductRestModel;
 public class ProductServiceImpl implements ProductService {
 
     private final KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
+    private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public ProductServiceImpl(KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -35,9 +37,15 @@ public class ProductServiceImpl implements ProductService {
                     System.err.println("Failed to send product created event: " + ex.getMessage());
                 } else {
                     // Message sent successfully
-                    System.out.println("Product created event sent successfully: " + result.getRecordMetadata());
+                    LOGGER.info("Partition:" + result.getRecordMetadata().partition());
+                    LOGGER.info("Offset:" + result.getRecordMetadata().offset());
+                    LOGGER.info("Topic:" + result.getRecordMetadata().topic());
                 }
             });
+
+        
+
+        LOGGER.info("Product created event sent successfully for productId: {}", productId);
         
         return productId;
     }
