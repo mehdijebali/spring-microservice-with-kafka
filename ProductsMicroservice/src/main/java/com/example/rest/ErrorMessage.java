@@ -1,4 +1,4 @@
-package com.example.products.rest;
+package com.example.rest;
 
 import java.util.Date;
 

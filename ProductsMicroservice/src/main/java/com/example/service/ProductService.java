@@ -1,6 +1,6 @@
-package com.example.products.service;
+package com.example.service;
 
-import com.example.products.rest.CreateProductRestModel;
+import com.example.rest.CreateProductRestModel;
 
 public interface ProductService {
     

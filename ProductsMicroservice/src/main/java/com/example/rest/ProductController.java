@@ -1,4 +1,4 @@
-package com.example.products.rest;
+package com.example.rest;
 
 import java.sql.Date;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.products.service.ProductService;
+import com.example.service.ProductService;
 
 @RestController
 @RequestMapping("/products")
