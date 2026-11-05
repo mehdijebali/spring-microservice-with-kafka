@@ -1,4 +1,4 @@
-package com.example.products.service;
+package com.example.service;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -8,7 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
-import com.example.products.rest.CreateProductRestModel;
+import com.example.rest.CreateProductRestModel;
 
 @Service
 public class ProductServiceImpl implements ProductService {
