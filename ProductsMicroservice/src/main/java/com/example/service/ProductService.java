@@ -4,5 +4,5 @@ import com.example.rest.CreateProductRestModel;
 
 public interface ProductService {
     
-    String createProduct(CreateProductRestModel product);
+    String createProduct(CreateProductRestModel product) throws Exception;
 }
