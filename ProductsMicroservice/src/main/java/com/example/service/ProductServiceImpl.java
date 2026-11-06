@@ -1,7 +1,6 @@
 package com.example.service;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String createProduct(CreateProductRestModel product) {
+    public String createProduct(CreateProductRestModel product) throws Exception {
 
         String productId = UUID.randomUUID().toString(); // Generate a unique product ID
         // Implement the logic to create a product
@@ -30,20 +29,14 @@ public class ProductServiceImpl implements ProductService {
             product.getPrice(),
             product.getQuantity());
         
-            CompletableFuture<SendResult<String, ProductCreatedEvent>> future = kafkaTemplate.send("product-created-events-topic", productCreatedEvent);
-            future.whenComplete((result, ex) -> {
-                if (ex != null) {
-                    // Handle the exception if the message sending fails
-                    System.err.println("Failed to send product created event: " + ex.getMessage());
-                } else {
-                    // Message sent successfully
-                    LOGGER.info("Partition:" + result.getRecordMetadata().partition());
-                    LOGGER.info("Offset:" + result.getRecordMetadata().offset());
-                    LOGGER.info("Topic:" + result.getRecordMetadata().topic());
-                }
-            });
+        // Block until the broker acknowledges, so a failed send reaches the caller
+        SendResult<String, ProductCreatedEvent> result = kafkaTemplate
+            .send("product-created-events-topic", productCreatedEvent)
+            .get();
 
-        
+        LOGGER.info("Partition:" + result.getRecordMetadata().partition());
+        LOGGER.info("Offset:" + result.getRecordMetadata().offset());
+        LOGGER.info("Topic:" + result.getRecordMetadata().topic());
 
         LOGGER.info("Product created event sent successfully for productId: {}", productId);
         
