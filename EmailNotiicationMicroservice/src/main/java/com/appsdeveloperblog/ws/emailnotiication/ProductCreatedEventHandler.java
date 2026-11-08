@@ -1,4 +1,4 @@
-package main.java.com.appsdeveloperblog.ws.emailnotiication;
+package com.appsdeveloperblog.ws.emailnotiication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
