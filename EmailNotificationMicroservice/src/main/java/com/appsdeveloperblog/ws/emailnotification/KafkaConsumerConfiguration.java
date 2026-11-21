@@ -28,6 +28,7 @@ import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
 public class KafkaConsumerConfiguration {
@@ -60,7 +61,9 @@ public class KafkaConsumerConfiguration {
 		
 		DefaultErrorHandler errorHandler = new DefaultErrorHandler(new DeadLetterPublishingRecoverer(kafkaTemplate,
 				// negative partition lets Kafka pick one, so the DLT partition count doesn't matter
-				(record, exception) -> new TopicPartition(record.topic() + ".DLT", -1)));
+				(record, exception) -> new TopicPartition(record.topic() + ".DLT", -1)), new FixedBackOff(5000L, 3L));
+		errorHandler.addNotRetryableExceptions(NotRetrayableException.class);
+		errorHandler.addRetryableExceptions(RetryableException.class);
 
 		ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory);
