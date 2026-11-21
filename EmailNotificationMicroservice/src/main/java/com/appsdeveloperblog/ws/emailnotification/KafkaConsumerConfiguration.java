@@ -50,7 +50,7 @@ public class KafkaConsumerConfiguration {
 				environment.getProperty("spring.kafka.consumer.properties.spring.json.use.type.headers"));
 		config.put(JacksonJsonDeserializer.VALUE_DEFAULT_TYPE,
 				environment.getProperty("spring.kafka.consumer.properties.spring.json.value.default.type"));
-		config.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
+		config.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("consumer.group-id"));
 
 		return new DefaultKafkaConsumerFactory<>(config);
 	}
