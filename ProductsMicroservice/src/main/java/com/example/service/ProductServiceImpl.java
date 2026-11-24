@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.util.UUID;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -29,9 +30,17 @@ public class ProductServiceImpl implements ProductService {
             product.getPrice(),
             product.getQuantity());
         
+        LOGGER.info("Before publishing a ProductCreatedEvent");
+		
+		ProducerRecord<String, ProductCreatedEvent> record = new ProducerRecord<>(
+				"product-created-events-topic",
+				productId,
+				productCreatedEvent);
+		record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
+        
         // Block until the broker acknowledges, so a failed send reaches the caller
         SendResult<String, ProductCreatedEvent> result = kafkaTemplate
-            .send("product-created-events-topic", productCreatedEvent)
+            .send(record)
             .get();
 
         LOGGER.info("Partition:" + result.getRecordMetadata().partition());
